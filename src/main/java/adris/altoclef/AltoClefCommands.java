@@ -31,6 +31,7 @@ public class AltoClefCommands {
                 new ReloadSettingsCommand(),
                 new GamerCommand(),
                 new MarvionCommand(),
+                new SpeedCommand(),
                 new PunkCommand(),
                 new HeroCommand(),
                 new SetGammaCommand(),
