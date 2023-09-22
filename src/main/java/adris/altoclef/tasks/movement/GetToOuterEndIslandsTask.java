@@ -5,6 +5,7 @@ import adris.altoclef.Debug;
 import adris.altoclef.tasks.InteractWithBlockTask;
 import adris.altoclef.tasks.resources.GetBuildingMaterialsTask;
 import adris.altoclef.tasks.speedrun.BeatMinecraft2Task;
+import adris.altoclef.tasks.speedrun.MarvionBeatMinecraftTask;
 import adris.altoclef.tasks.squashed.CataloguedResourceTask;
 import adris.altoclef.tasksystem.Task;
 import adris.altoclef.util.Dimension;
@@ -43,7 +44,7 @@ public class GetToOuterEndIslandsTask extends Task {
     protected void onStart(AltoClef mod) {
         mod.getBehaviour().push();
         mod.getBlockTracker().trackBlock(Blocks.END_GATEWAY);
-        _beatTheGame = new BeatMinecraft2Task();
+        _beatTheGame = new MarvionBeatMinecraftTask();
     }
 
     @Override

@@ -223,11 +223,11 @@ public class AltoClef implements ModInitializer {
         getClientBaritoneSettings().overshootTraverse.value = false;
         getClientBaritoneSettings().allowOvershootDiagonalDescend.value = true;
         getClientBaritoneSettings().allowInventory.value = true;
-        getClientBaritoneSettings().allowParkour.value = false;
-        getClientBaritoneSettings().allowParkourAscend.value = false;
-        getClientBaritoneSettings().allowParkourPlace.value = false;
-        getClientBaritoneSettings().allowDiagonalDescend.value = false;
-        getClientBaritoneSettings().allowDiagonalAscend.value = false;
+        getClientBaritoneSettings().allowParkour.value = true;
+        getClientBaritoneSettings().allowParkourAscend.value = true;
+        getClientBaritoneSettings().allowParkourPlace.value = true;
+        getClientBaritoneSettings().allowDiagonalDescend.value = true;
+        getClientBaritoneSettings().allowDiagonalAscend.value = true;
         getClientBaritoneSettings().blocksToAvoid.value = List.of(Blocks.FLOWERING_AZALEA, Blocks.AZALEA,
                 Blocks.POWDER_SNOW, Blocks.BIG_DRIPLEAF, Blocks.BIG_DRIPLEAF_STEM, Blocks.CAVE_VINES,
                 Blocks.CAVE_VINES_PLANT, Blocks.TWISTING_VINES, Blocks.TWISTING_VINES_PLANT, Blocks.SWEET_BERRY_BUSH,

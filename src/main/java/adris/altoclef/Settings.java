@@ -72,7 +72,7 @@ public class Settings implements IFailableConfigFile {
     /**
      * If true, will show a timer.
      */
-    private boolean showTimer = false;
+    private boolean showTimer = true;
 
     /**
      * The delay between moving items for crafting/furnace/any kind of inventory movement.
@@ -315,6 +315,7 @@ public class Settings implements IFailableConfigFile {
             Items.DIRT,
             Items.COBBLED_DEEPSLATE,
             Items.ACACIA_LEAVES, Items.BIRCH_LEAVES, Items.DARK_OAK_LEAVES, Items.OAK_LEAVES, Items.JUNGLE_LEAVES, Items.SPRUCE_LEAVES,
+            Items.WHEAT_SEEDS,
             // Nether junk, to be fair it's mostly tuned for the "beat game" task
             Items.NETHERRACK,
             Items.MAGMA_BLOCK,
