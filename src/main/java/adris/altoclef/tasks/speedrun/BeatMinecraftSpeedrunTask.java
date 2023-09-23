@@ -1502,8 +1502,9 @@ public class BeatMinecraftSpeedrunTask extends Task {
                 boolean eyeGearSatisfied = StorageHelper.itemTargetsMet(mod, COLLECT_EYE_GEAR_MIN) && StorageHelper.isArmorEquippedAll(mod, COLLECT_EYE_ARMOR);
                 boolean ironGearSatisfied = StorageHelper.itemTargetsMet(mod, COLLECT_IRON_GEAR_MIN) && StorageHelper.isArmorEquippedAll(mod, COLLECT_IRON_ARMOR);
                 boolean shieldSatisfied = StorageHelper.isArmorEquipped(mod, COLLECT_SHIELD);
+                // TODO: dosent get coal
                 // Search for a better place
-                if (!StorageHelper.itemTargetsMet(mod, IRON_GEAR_MIN) && !StorageHelper.itemTargetsMet(mod, COLLECT_STONE_GEAR_MIN) && !ironGearSatisfied && !eyeGearSatisfied) {
+                /*if (!StorageHelper.itemTargetsMet(mod, IRON_GEAR_MIN) && !StorageHelper.itemTargetsMet(mod, COLLECT_STONE_GEAR_MIN) && !ironGearSatisfied && !eyeGearSatisfied) {
                     // get only a little wood
                     if (mod.getItemStorage().getItemCount(ItemHelper.LOG) < 5 && !StorageHelper.itemTargetsMet(mod, COLLECT_STONE_GEAR_MIN) &&
                             !StorageHelper.itemTargetsMet(mod, IRON_GEAR_MIN) && !eyeGearSatisfied &&
@@ -1552,7 +1553,7 @@ public class BeatMinecraftSpeedrunTask extends Task {
                     return searchBiomeTask;
                 } else {
                     searchBiomeTask = null;
-                */
+
                 }
                 // Then get one bed
                 if (!mod.getItemStorage().hasItem(ItemHelper.BED) && _config.sleepThroughNight) {
@@ -1582,13 +1583,6 @@ public class BeatMinecraftSpeedrunTask extends Task {
                 } else {
                     _starterGearTask = null;
                 }
-                // Then get food
-                if (StorageHelper.calculateInventoryFoodScore(mod) < _config.minFoodUnits) {
-                    _foodTask = new CollectFoodTask(_config.foodUnits);
-                    return _foodTask;
-                } else {
-                    _foodTask = null;
-                }
                 // Then get shield
                 if (_config.getShield && !shieldSatisfied && !mod.getFoodChain().needsToEat()) {
                     ItemTarget shield = new ItemTarget(COLLECT_SHIELD);
@@ -1600,6 +1594,13 @@ public class BeatMinecraftSpeedrunTask extends Task {
                     return _shieldTask;
                 } else {
                     _shieldTask = null;
+                }
+                // Then get food
+                if (StorageHelper.calculateInventoryFoodScore(mod) < _config.minFoodUnits) {
+                    _foodTask = new CollectFoodTask(_config.foodUnits);
+                    return _foodTask;
+                } else {
+                    _foodTask = null;
                 }
                 // Then loot chest if there is any
                 if (_config.searchRuinedPortals) {
@@ -1617,7 +1618,7 @@ public class BeatMinecraftSpeedrunTask extends Task {
                         _lootTask = new LootDesertTempleTask(temple, lootableItems(mod));
                         return _lootTask;
                     }
-                }
+                }*/
                 // Then get iron
                 if (_config.ironGearBeforeDiamondGear && !ironGearSatisfied && !eyeGearSatisfied &&
                         !_isEquippingDiamondArmor) {
@@ -1625,16 +1626,17 @@ public class BeatMinecraftSpeedrunTask extends Task {
                         if (mod.getItemStorage().hasItem(iron) && !StorageHelper.isArmorEquipped(mod, iron)) {
                             setDebugState("Equipping armor.");
                             return new EquipArmorTask(iron);
-                        } else {
+                        } else if (!mod.getItemStorage().hasItem(iron) && !StorageHelper.isArmorEquipped(mod, iron)) {
                             _ironGearTask = TaskCatalogue.getItemTask(iron, 1);
                             return _ironGearTask;
                         }
                     }
-                    // _ironGearTask = TaskCatalogue.getSquashedItemTask(Stream.concat(Arrays.stream(COLLECT_IRON_ARMOR).filter(item -> !mod.getItemStorage().hasItem(item) && !StorageHelper.isArmorEquipped(mod, item)).map(item -> new ItemTarget(item, 1)), Arrays.stream(COLLECT_IRON_GEAR)).toArray(ItemTarget[]::new));
-                    // return _ironGearTask;
+                    /*_ironGearTask = TaskCatalogue.getSquashedItemTask(Arrays.stream(COLLECT_IRON_ARMOR).filter(item -> !mod.getItemStorage().hasItem(item) && !StorageHelper.isArmorEquipped(mod, item)).map(item -> new ItemTarget(item, 1)).toArray(ItemTarget[]::new));
+                    return _ironGearTask;*/
                 } else {
                     _ironGearTask = null;
                 }
+                // TODO: sleep only if above ground
                 // Then get diamond
                 if (!eyeGearSatisfied) {
                     if (!StorageHelper.itemTargetsMet(mod, COLLECT_EYE_GEAR_MIN)) {
@@ -1645,7 +1647,7 @@ public class BeatMinecraftSpeedrunTask extends Task {
                             setDebugState("Equipping armor.");
                             _isEquippingDiamondArmor = true;
                             return new EquipArmorTask(diamond);
-                        } else {
+                        } else if (!mod.getItemStorage().hasItem(diamond) && !StorageHelper.isArmorEquipped(mod, diamond)) {
                             _gearTask = TaskCatalogue.getItemTask(diamond, 1);
                             return _gearTask;
                         }
