@@ -1504,7 +1504,7 @@ public class BeatMinecraftSpeedrunTask extends Task {
                 boolean shieldSatisfied = StorageHelper.isArmorEquipped(mod, COLLECT_SHIELD);
                 // TODO: dosent get coal
                 // Search for a better place
-                /*if (!StorageHelper.itemTargetsMet(mod, IRON_GEAR_MIN) && !StorageHelper.itemTargetsMet(mod, COLLECT_STONE_GEAR_MIN) && !ironGearSatisfied && !eyeGearSatisfied) {
+                if (!StorageHelper.itemTargetsMet(mod, IRON_GEAR_MIN) && !StorageHelper.itemTargetsMet(mod, COLLECT_STONE_GEAR_MIN) && !ironGearSatisfied && !eyeGearSatisfied) {
                     // get only a little wood
                     if (mod.getItemStorage().getItemCount(ItemHelper.LOG) < 5 && !StorageHelper.itemTargetsMet(mod, COLLECT_STONE_GEAR_MIN) &&
                             !StorageHelper.itemTargetsMet(mod, IRON_GEAR_MIN) && !eyeGearSatisfied &&
@@ -1553,7 +1553,7 @@ public class BeatMinecraftSpeedrunTask extends Task {
                     return searchBiomeTask;
                 } else {
                     searchBiomeTask = null;
-
+                */
                 }
                 // Then get one bed
                 if (!mod.getItemStorage().hasItem(ItemHelper.BED) && _config.sleepThroughNight) {
@@ -1618,7 +1618,7 @@ public class BeatMinecraftSpeedrunTask extends Task {
                         _lootTask = new LootDesertTempleTask(temple, lootableItems(mod));
                         return _lootTask;
                     }
-                }*/
+                }
                 // Then get iron
                 if (_config.ironGearBeforeDiamondGear && !ironGearSatisfied && !eyeGearSatisfied &&
                         !_isEquippingDiamondArmor) {
