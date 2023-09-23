@@ -87,7 +87,7 @@ public class BeatMinecraftSpeedrunTask extends Task {
     );
     private static final ItemTarget[] COLLECT_EYE_GEAR = combine(
             toItemTargets(Items.DIAMOND_SWORD),
-            toItemTargets(Items.DIAMOND_PICKAXE, 3),
+            toItemTargets(Items.DIAMOND_PICKAXE, 2),
             toItemTargets(Items.BUCKET,2),
             toItemTargets(Items.CRAFTING_TABLE)
     );
@@ -1468,9 +1468,7 @@ public class BeatMinecraftSpeedrunTask extends Task {
                 boolean ironGearSatisfied = StorageHelper.itemTargetsMet(mod, COLLECT_IRON_GEAR_MIN) && StorageHelper.isArmorEquippedAll(mod, COLLECT_IRON_ARMOR);
                 boolean shieldSatisfied = StorageHelper.isArmorEquipped(mod, COLLECT_SHIELD);
                 // Search for a better place
-                if (!mod.getItemStorage().hasItem(Items.PORKCHOP) &&
-                        !mod.getItemStorage().hasItem(Items.COOKED_PORKCHOP) &&
-                        !StorageHelper.itemTargetsMet(mod, IRON_GEAR_MIN) && !ironGearSatisfied && !eyeGearSatisfied) {
+                if (!StorageHelper.itemTargetsMet(mod, IRON_GEAR_MIN) && !ironGearSatisfied && !eyeGearSatisfied) {
                     // get only a little wood
                     if (mod.getItemStorage().getItemCount(ItemHelper.LOG) < 5 && !StorageHelper.itemTargetsMet(mod, COLLECT_STONE_GEAR) &&
                             !StorageHelper.itemTargetsMet(mod, IRON_GEAR_MIN) && !eyeGearSatisfied &&
@@ -1504,7 +1502,7 @@ public class BeatMinecraftSpeedrunTask extends Task {
                     } else {
                         _getPorkchopTask = null;
                     }
-                     */
+
                     setDebugState("Searching a better place to start with.");
                     if (_config.renderDistanceManipulation) {
                         if (!mod.getClientBaritone().getExploreProcess().isActive()) {
@@ -1519,6 +1517,7 @@ public class BeatMinecraftSpeedrunTask extends Task {
                     return searchBiomeTask;
                 } else {
                     searchBiomeTask = null;
+                */
                 }
                 // Then get one bed
                 if (!mod.getItemStorage().hasItem(ItemHelper.BED) && _config.sleepThroughNight) {
