@@ -1591,10 +1591,13 @@ public class BeatMinecraftSpeedrunTask extends Task {
                         if (mod.getItemStorage().hasItem(iron) && !StorageHelper.isArmorEquipped(mod, iron)) {
                             setDebugState("Equipping armor.");
                             return new EquipArmorTask(COLLECT_IRON_ARMOR);
+                        } else {
+                            _ironGearTask = TaskCatalogue.getItemTask(iron, 1);
+                            return _ironGearTask;
                         }
                     }
-                    _ironGearTask = TaskCatalogue.getSquashedItemTask(Stream.concat(Arrays.stream(COLLECT_IRON_ARMOR).filter(item -> !mod.getItemStorage().hasItem(item) && !StorageHelper.isArmorEquipped(mod, item)).map(item -> new ItemTarget(item, 1)), Arrays.stream(COLLECT_IRON_GEAR)).toArray(ItemTarget[]::new));
-                    return _ironGearTask;
+                    // _ironGearTask = TaskCatalogue.getSquashedItemTask(Stream.concat(Arrays.stream(COLLECT_IRON_ARMOR).filter(item -> !mod.getItemStorage().hasItem(item) && !StorageHelper.isArmorEquipped(mod, item)).map(item -> new ItemTarget(item, 1)), Arrays.stream(COLLECT_IRON_GEAR)).toArray(ItemTarget[]::new));
+                    // return _ironGearTask;
                 } else {
                     _ironGearTask = null;
                 }
@@ -1605,10 +1608,13 @@ public class BeatMinecraftSpeedrunTask extends Task {
                             setDebugState("Equipping armor.");
                             _isEquippingDiamondArmor = true;
                             return new EquipArmorTask(COLLECT_EYE_ARMOR);
+                        } else {
+                            _gearTask = TaskCatalogue.getItemTask(diamond, 1);
+                            return _gearTask;
                         }
                     }
-                    _gearTask = TaskCatalogue.getSquashedItemTask(Stream.concat(Arrays.stream(COLLECT_EYE_ARMOR).filter(item -> !mod.getItemStorage().hasItem(item) && !StorageHelper.isArmorEquipped(mod, item)).map(item -> new ItemTarget(item, 1)), Arrays.stream(COLLECT_EYE_GEAR)).toArray(ItemTarget[]::new));
-                    return _gearTask;
+                    // _gearTask = TaskCatalogue.getSquashedItemTask(Stream.concat(Arrays.stream(COLLECT_EYE_ARMOR).filter(item -> !mod.getItemStorage().hasItem(item) && !StorageHelper.isArmorEquipped(mod, item)).map(item -> new ItemTarget(item, 1)), Arrays.stream(COLLECT_EYE_GEAR)).toArray(ItemTarget[]::new));
+                    // return _gearTask;
                 } else {
                     _gearTask = null;
                     Item[] throwGearItems = {Items.STONE_SWORD, Items.STONE_PICKAXE, Items.IRON_SWORD, Items.IRON_PICKAXE};
