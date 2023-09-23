@@ -76,13 +76,17 @@ public class BeatMinecraftSpeedrunTask extends Task {
             toItemTargets(Items.STONE_AXE),
             toItemTargets(Items.COAL, 13)
     );
+    private static final ItemTarget[] COLLECT_STONE_GEAR_MIN = combine(
+            toItemTargets(Items.STONE_SWORD, 1),
+            toItemTargets(Items.STONE_PICKAXE, 1)
+    );
     private static final Item COLLECT_SHIELD = Items.SHIELD;
     private static final Item[] COLLECT_IRON_ARMOR = ItemHelper.IRON_ARMORS;
     private static final Item[] COLLECT_EYE_ARMOR_END = ItemHelper.DIAMOND_ARMORS;
     private static final ItemTarget[] COLLECT_IRON_GEAR = combine(
             toItemTargets(Items.IRON_SWORD, 2),
             toItemTargets(Items.STONE_SHOVEL),
-            toItemTargets(Items.STONE_AXE),
+            toItemTargets(Items.STONE_HOE),
             toItemTargets(Items.DIAMOND_PICKAXE)
     );
     private static final ItemTarget[] COLLECT_EYE_GEAR = combine(
@@ -103,12 +107,11 @@ public class BeatMinecraftSpeedrunTask extends Task {
             toItemTargets(Items.IRON_SWORD),
             toItemTargets(Items.STONE_SHOVEL),
             toItemTargets(Items.STONE_HOE),
-            toItemTargets(Items.DIAMOND_PICKAXE)
+            toItemTargets(Items.IRON_PICKAXE)
     );
     private static final ItemTarget[] IRON_GEAR_MIN = combine(
             toItemTargets(Items.IRON_SWORD),
-            toItemTargets(Items.DIAMOND_PICKAXE),
-            toItemTargets(Items.SHIELD)
+            toItemTargets(Items.IRON_PICKAXE)
     );
     private static final int END_PORTAL_FRAME_COUNT = 12;
     private static final double END_PORTAL_BED_SPAWN_RANGE = 8;
@@ -1468,9 +1471,10 @@ public class BeatMinecraftSpeedrunTask extends Task {
                 boolean ironGearSatisfied = StorageHelper.itemTargetsMet(mod, COLLECT_IRON_GEAR_MIN) && StorageHelper.isArmorEquippedAll(mod, COLLECT_IRON_ARMOR);
                 boolean shieldSatisfied = StorageHelper.isArmorEquipped(mod, COLLECT_SHIELD);
                 // Search for a better place
-                if (!StorageHelper.itemTargetsMet(mod, IRON_GEAR_MIN) && !ironGearSatisfied && !eyeGearSatisfied) {
+                if (!StorageHelper.itemTargetsMet(mod, IRON_GEAR_MIN) && !StorageHelper.itemTargetsMet(mod, COLLECT_STONE_GEAR_MIN) && !ironGearSatisfied && !eyeGearSatisfied) {
+                    Debug.logWarning("start");
                     // get only a little wood
-                    if (mod.getItemStorage().getItemCount(ItemHelper.LOG) < 5 && !StorageHelper.itemTargetsMet(mod, COLLECT_STONE_GEAR) &&
+                    if (mod.getItemStorage().getItemCount(ItemHelper.LOG) < 5 && !StorageHelper.itemTargetsMet(mod, COLLECT_STONE_GEAR_MIN) &&
                             !StorageHelper.itemTargetsMet(mod, IRON_GEAR_MIN) && !eyeGearSatisfied &&
                             !ironGearSatisfied) {
                         _logsTask = TaskCatalogue.getItemTask("log", 7);
@@ -1478,7 +1482,7 @@ public class BeatMinecraftSpeedrunTask extends Task {
                     } else {
                         _logsTask = null;
                     }
-                    if (!StorageHelper.itemTargetsMet(mod, COLLECT_STONE_GEAR) &&
+                    if (!StorageHelper.itemTargetsMet(mod, COLLECT_STONE_GEAR_MIN) &&
                             !StorageHelper.itemTargetsMet(mod, IRON_GEAR_MIN) && !eyeGearSatisfied &&
                             !ironGearSatisfied) {
                         if (mod.getItemStorage().getItemCount(Items.STICK) < 8) {
@@ -1589,7 +1593,7 @@ public class BeatMinecraftSpeedrunTask extends Task {
                     for (Item iron : COLLECT_IRON_ARMOR) {
                         if (mod.getItemStorage().hasItem(iron) && !StorageHelper.isArmorEquipped(mod, iron)) {
                             setDebugState("Equipping armor.");
-                            return new EquipArmorTask(COLLECT_IRON_ARMOR);
+                            return new EquipArmorTask(iron);
                         } else {
                             _ironGearTask = TaskCatalogue.getItemTask(iron, 1);
                             return _ironGearTask;
@@ -1602,11 +1606,14 @@ public class BeatMinecraftSpeedrunTask extends Task {
                 }
                 // Then get diamond
                 if (!eyeGearSatisfied) {
+                    if (!StorageHelper.itemTargetsMet(mod, COLLECT_EYE_GEAR_MIN)) {
+                        _gearTask = TaskCatalogue.getSquashedItemTask((Arrays.stream(COLLECT_EYE_GEAR)).toArray(ItemTarget[]::new));
+                    }
                     for (Item diamond : COLLECT_EYE_ARMOR) {
                         if (mod.getItemStorage().hasItem(diamond) && !StorageHelper.isArmorEquipped(mod, diamond)) {
                             setDebugState("Equipping armor.");
                             _isEquippingDiamondArmor = true;
-                            return new EquipArmorTask(COLLECT_EYE_ARMOR);
+                            return new EquipArmorTask(diamond);
                         } else {
                             _gearTask = TaskCatalogue.getItemTask(diamond, 1);
                             return _gearTask;
