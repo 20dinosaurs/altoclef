@@ -7,7 +7,7 @@ import adris.altoclef.tasks.speedrun.BeatMinecraftSpeedrunTask;
 
 public class SpeedCommand extends Command {
     public SpeedCommand() {
-        super("speed", "Beats the game (20dinosaurs speed version).");
+        super("bruh", "Does a bruh (beats the game).");
     }
 
     @Override
