@@ -64,7 +64,8 @@ public class BeatMinecraftSpeedrunTask extends Task {
             Blocks.CRAFTING_TABLE, // For pearl trading + gold crafting
             Blocks.CHEST, // For ruined portals
             Blocks.SPAWNER, // For silverfish,
-            Blocks.STONE_PRESSURE_PLATE // For desert temples
+            Blocks.STONE_PRESSURE_PLATE, // For desert temples
+            Blocks.HAY_BLOCK
     };
     private static final Item[] COLLECT_EYE_ARMOR = new Item[]{
             Items.GOLDEN_HELMET, Items.DIAMOND_CHESTPLATE, Items.DIAMOND_LEGGINGS,
@@ -116,8 +117,8 @@ public class BeatMinecraftSpeedrunTask extends Task {
     private static final int END_PORTAL_FRAME_COUNT = 12;
     private static final double END_PORTAL_BED_SPAWN_RANGE = 8;
 
-    private static final int TWISTING_VINES_COUNT = 28;
-    private static final int TWISTING_VINES_COUNT_MIN = 14;
+    private static final int TWISTING_VINES_COUNT = 18;
+    private static final int TWISTING_VINES_COUNT_MIN = 10;
     // We don't want curse of binding
     private static final Predicate<ItemStack> _noCurseOfBinding = stack -> {
         for (NbtElement elm : stack.getEnchantments()) {
@@ -177,6 +178,7 @@ public class BeatMinecraftSpeedrunTask extends Task {
     private Task _smeltTask;
     private Task getBedTask;
     private Task getTwistingVines;
+    private Task getHayTask;
 
     public BeatMinecraftSpeedrunTask() {
         _locateStrongholdTask = new GoToStrongholdPortalTask(_config.targetEyes);
@@ -370,7 +372,7 @@ public class BeatMinecraftSpeedrunTask extends Task {
         mod.getBlockTracker().trackBlock(TRACK_BLOCKS);
         mod.getBehaviour().addProtectedItems(Items.ENDER_EYE, Items.BLAZE_ROD, Items.ENDER_PEARL, Items.CRAFTING_TABLE,
                 Items.IRON_INGOT, Items.WATER_BUCKET, Items.FLINT_AND_STEEL, Items.SHIELD, Items.SHEARS, Items.BUCKET,
-                Items.GOLDEN_HELMET, Items.SMOKER, Items.FURNACE, Items.BLAST_FURNACE);
+                Items.GOLDEN_HELMET, Items.SMOKER, Items.FURNACE, Items.BLAST_FURNACE, Items.HAY_BLOCK);
         mod.getBehaviour().addProtectedItems(ItemHelper.BED);
         mod.getBehaviour().addProtectedItems(ItemHelper.IRON_ARMORS);
         mod.getBehaviour().addProtectedItems(ItemHelper.LOG);
@@ -617,7 +619,7 @@ public class BeatMinecraftSpeedrunTask extends Task {
         if (WorldHelper.getCurrentDimension() == Dimension.OVERWORLD && _foodTask == null && !_getOneBedTask.isActive()
                 && !_locateStrongholdTask.isActive() && _logsTask == null && _stoneGearTask == null &&
                 _getPorkchopTask == null && searchBiomeTask == null && _config.renderDistanceManipulation &&
-                !_ranStrongholdLocator && getBedTask == null && !_sleepThroughNightTask.isActive()) {
+                !_ranStrongholdLocator && getBedTask == null && getHayTask == null && !_sleepThroughNightTask.isActive()) {
             if (!mod.getClientBaritone().getExploreProcess().isActive()) {
                 if (_timer1.elapsed()) {
                     if (_config.renderDistanceManipulation) {
@@ -888,6 +890,16 @@ public class BeatMinecraftSpeedrunTask extends Task {
             }
         }
         if (getBedTask != null) {
+            // for smoker
+            _smeltTask = null;
+            _foodTask = null;
+            // for furnace
+            _starterGearTask = null;
+            _shieldTask = null;
+            _ironGearTask = null;
+            _gearTask = null;
+        }
+        if (getHayTask != null) {
             // for smoker
             _smeltTask = null;
             _foodTask = null;
@@ -1282,8 +1294,13 @@ public class BeatMinecraftSpeedrunTask extends Task {
     }
 
     private boolean anyBedsFound(AltoClef mod) {
-        return mod.getBlockTracker().anyFound(ItemHelper.itemsToBlocks(ItemHelper.BED)) ||
-                mod.getEntityTracker().itemDropped(ItemHelper.BED);
+        return mod.getBlockTracker().anyFound(Blocks.HAY_BLOCK) ||
+                mod.getEntityTracker().itemDropped(Items.HAY_BLOCK);
+    }
+
+    private boolean anyHayFound(AltoClef mod) {
+        return mod.getBlockTracker().anyFound(Blocks.HAY_BLOCK) ||
+                mod.getEntityTracker().itemDropped(Items.HAY_BLOCK);
     }
 
     private BlockPos doSimpleSearchForEndPortal(AltoClef mod) {
@@ -1376,6 +1393,21 @@ public class BeatMinecraftSpeedrunTask extends Task {
                     return getBedTask;
                 } else {
                     getBedTask = null;
+                }
+                if (mod.getItemStorage().getItemCount(Items.HAY_BLOCK) < 5 && anyHayFound(mod)) {
+                    setDebugState("A hay block was found, getting it.");
+                    if (_config.renderDistanceManipulation) {
+                        if (!mod.getClientBaritone().getExploreProcess().isActive()) {
+                            if (_timer1.elapsed()) {
+                                MinecraftClient.getInstance().options.getViewDistance().setValue(2);
+                                MinecraftClient.getInstance().options.getEntityDistanceScaling().setValue(0.5);
+                                _timer1.reset();
+                            }
+                        }
+                    }
+                    getHayTask = TaskCatalogue.getItemTask(Items.HAY_BLOCK, 2);
+                } else {
+                    getHayTask = null;
                 }
                 if (shouldForce(mod, _logsTask)) {
                     setDebugState("Getting logs for later.");
@@ -1472,7 +1504,6 @@ public class BeatMinecraftSpeedrunTask extends Task {
                 boolean shieldSatisfied = StorageHelper.isArmorEquipped(mod, COLLECT_SHIELD);
                 // Search for a better place
                 if (!StorageHelper.itemTargetsMet(mod, IRON_GEAR_MIN) && !StorageHelper.itemTargetsMet(mod, COLLECT_STONE_GEAR_MIN) && !ironGearSatisfied && !eyeGearSatisfied) {
-                    Debug.logWarning("start");
                     // get only a little wood
                     if (mod.getItemStorage().getItemCount(ItemHelper.LOG) < 5 && !StorageHelper.itemTargetsMet(mod, COLLECT_STONE_GEAR_MIN) &&
                             !StorageHelper.itemTargetsMet(mod, IRON_GEAR_MIN) && !eyeGearSatisfied &&
@@ -1528,8 +1559,8 @@ public class BeatMinecraftSpeedrunTask extends Task {
                     return _getOneBedTask;
                 }
                 // Get a little food
-                if (StorageHelper.calculateInventoryFoodScore(mod) < 18) {
-                    _foodTask = new CollectFoodTask(24);
+                if (StorageHelper.calculateInventoryFoodScore(mod) < 30) {
+                    _foodTask = new CollectFoodTask(40);
                     return _foodTask;
                 } else {
                     _foodTask = null;
