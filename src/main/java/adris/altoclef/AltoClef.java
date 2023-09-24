@@ -224,6 +224,7 @@ public class AltoClef implements ModInitializer {
         getClientBaritoneSettings().allowOvershootDiagonalDescend.value = true;
         // Let baritone move items to hotbar to use them
         getClientBaritoneSettings().allowInventory.value = true;
+        // Sketchy
         getClientBaritoneSettings().allowParkour.value = true;
         getClientBaritoneSettings().allowParkourAscend.value = true;
         getClientBaritoneSettings().allowParkourPlace.value = true;
@@ -244,12 +245,14 @@ public class AltoClef implements ModInitializer {
         );
         // Don't let baritone mine with sword
         getClientBaritoneSettings().useSwordToMine.value = false;
-        // Reduces a bit of far rendering to save FPS
-        getClientBaritoneSettings().fadePath.value = true;
+        // (dont) Reduces a bit of far rendering to save FPS
+        getClientBaritoneSettings().fadePath.value = false;
         // Don't let baritone scan dropped items, we handle that ourselves.
         getClientBaritoneSettings().mineScanDroppedItems.value = false;
         // Don't let baritone wait for drops, we handle that ourselves.
         getClientBaritoneSettings().mineDropLoiterDurationMSThanksLouca.value = 0L;
+        // Allow a little fall damage
+        getClientBaritoneSettings().maxFallHeightNoWater.value = 4;
 
         // Water bucket placement will be handled by us exclusively
         getExtraBaritoneSettings().configurePlaceBucketButDontFall(true);

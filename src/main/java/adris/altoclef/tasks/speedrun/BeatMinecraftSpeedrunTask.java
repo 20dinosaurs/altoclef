@@ -75,7 +75,7 @@ public class BeatMinecraftSpeedrunTask extends Task {
             toItemTargets(Items.STONE_SWORD, 1),
             toItemTargets(Items.STONE_PICKAXE, 1),
             toItemTargets(Items.STONE_AXE),
-            toItemTargets(Items.COAL, 13)
+            toItemTargets(Items.COAL, 8)
     );
     private static final ItemTarget[] COLLECT_STONE_GEAR_MIN = combine(
             toItemTargets(Items.STONE_SWORD, 1),
@@ -111,8 +111,7 @@ public class BeatMinecraftSpeedrunTask extends Task {
             toItemTargets(Items.IRON_SWORD),
             toItemTargets(Items.STONE_SHOVEL),
             toItemTargets(Items.STONE_HOE),
-            toItemTargets(Items.IRON_PICKAXE),
-            toItemTargets(Items.IRON_INGOT, 8)
+            toItemTargets(Items.IRON_PICKAXE)
     );
     private static final ItemTarget[] IRON_GEAR_MIN = combine(
             toItemTargets(Items.IRON_SWORD),
@@ -121,8 +120,8 @@ public class BeatMinecraftSpeedrunTask extends Task {
     private static final int END_PORTAL_FRAME_COUNT = 12;
     private static final double END_PORTAL_BED_SPAWN_RANGE = 8;
 
-    private static final int TWISTING_VINES_COUNT = 18;
-    private static final int TWISTING_VINES_COUNT_MIN = 10;
+    private static final int TWISTING_VINES_COUNT = 11;
+    private static final int TWISTING_VINES_COUNT_MIN = 7;
     // We don't want curse of binding
     private static final Predicate<ItemStack> _noCurseOfBinding = stack -> {
         for (NbtElement elm : stack.getEnchantments()) {
@@ -957,7 +956,7 @@ public class BeatMinecraftSpeedrunTask extends Task {
         }
 
         // Sleep through night.
-        if (_config.sleepThroughNight && !_endPortalOpened && WorldHelper.getCurrentDimension() == Dimension.OVERWORLD) {
+        if (_config.sleepThroughNight && (_config.sleepUnderground || LookHelper.getCameraPos(mod).y > 40) && !_endPortalOpened && WorldHelper.getCurrentDimension() == Dimension.OVERWORLD) {
             if (WorldHelper.canSleep()) {
                 // for smoker
                 _smeltTask = null;
@@ -1402,7 +1401,6 @@ public class BeatMinecraftSpeedrunTask extends Task {
                     getBedTask = null;
                 }
                 if (mod.getItemStorage().getItemCount(Items.HAY_BLOCK) < 5 && anyHayFound(mod)) {
-                    Debug.logWarning(String.valueOf(anyHayFound(mod)));
                     setDebugState("A hay block was found, getting it.");
                     if (_config.renderDistanceManipulation) {
                         if (!mod.getClientBaritone().getExploreProcess().isActive()) {
@@ -1629,7 +1627,6 @@ public class BeatMinecraftSpeedrunTask extends Task {
                 } else {
                     _ironGearTask = null;
                 }
-                // TODO: sleep only if above ground
                 // Then get diamond
                 if (!eyeGearSatisfied) {
                     if (!StorageHelper.itemTargetsMet(mod, COLLECT_EYE_GEAR_MIN)) {
