@@ -101,7 +101,7 @@ public class BeatMinecraftSpeedrunTask extends Task {
     );
     private static final ItemTarget[] COLLECT_IRON_GEAR_MIN = combine(
             toItemTargets(Items.IRON_SWORD),
-            toItemTargets(Items.DIAMOND_PICKAXE)
+            toItemTargets(Items.IRON_PICKAXE)
     );
     private static final ItemTarget[] COLLECT_EYE_GEAR_MIN = combine(
             toItemTargets(Items.DIAMOND_SWORD),
@@ -182,6 +182,9 @@ public class BeatMinecraftSpeedrunTask extends Task {
     private Task getBedTask;
     private Task getTwistingVines;
     private Task getHayTask;
+    private boolean _isDoingStone = false;
+    private boolean _isDoingIron = false;
+    private boolean _isDoingDiamond = false;
 
     public BeatMinecraftSpeedrunTask() {
         _locateStrongholdTask = new GoToStrongholdPortalTask(_config.targetEyes);
@@ -1505,21 +1508,26 @@ public class BeatMinecraftSpeedrunTask extends Task {
                 boolean eyeGearSatisfied = StorageHelper.itemTargetsMet(mod, COLLECT_EYE_GEAR_MIN) && StorageHelper.isArmorEquippedAll(mod, COLLECT_EYE_ARMOR);
                 boolean ironGearSatisfied = StorageHelper.itemTargetsMet(mod, COLLECT_IRON_GEAR_MIN) && StorageHelper.isArmorEquippedAll(mod, COLLECT_IRON_ARMOR);
                 boolean shieldSatisfied = StorageHelper.isArmorEquipped(mod, COLLECT_SHIELD);
-                // TODO: dosent get coal
-                // Search for a better place
-                if (!StorageHelper.itemTargetsMet(mod, IRON_GEAR_MIN) && !StorageHelper.itemTargetsMet(mod, COLLECT_STONE_GEAR_MIN) && !ironGearSatisfied && !eyeGearSatisfied) {
-                    // get only a little wood
-                    if (mod.getItemStorage().getItemCount(ItemHelper.LOG) < 5 && !StorageHelper.itemTargetsMet(mod, COLLECT_STONE_GEAR_MIN) &&
-                            !StorageHelper.itemTargetsMet(mod, IRON_GEAR_MIN) && !eyeGearSatisfied &&
-                            !ironGearSatisfied) {
-                        _logsTask = TaskCatalogue.getItemTask("log", 7);
-                        return _logsTask;
-                    } else {
-                        _logsTask = null;
-                    }
-                    if (!StorageHelper.itemTargetsMet(mod, COLLECT_STONE_GEAR_MIN) &&
-                            !StorageHelper.itemTargetsMet(mod, IRON_GEAR_MIN) && !eyeGearSatisfied &&
-                            !ironGearSatisfied) {
+
+                // get only a little wood
+                if (mod.getItemStorage().getItemCount(ItemHelper.LOG) < 6 && !StorageHelper.itemTargetsMet(mod, COLLECT_STONE_GEAR_MIN) &&
+                        !StorageHelper.itemTargetsMet(mod, IRON_GEAR_MIN) && !eyeGearSatisfied &&
+                        !ironGearSatisfied) {
+                    _logsTask = TaskCatalogue.getItemTask("log", 8);
+                    return _logsTask;
+                } else {
+                    _logsTask = null;
+                }
+
+                if (!StorageHelper.itemTargetsMet(mod, COLLECT_STONE_GEAR_MIN) &&
+                        !StorageHelper.itemTargetsMet(mod, IRON_GEAR_MIN) && !eyeGearSatisfied &&
+                        !ironGearSatisfied) {
+                    _isDoingStone = true;
+                } else {
+                    _stoneGearTask = null;
+                }
+                if (_isDoingStone) {
+                    if (!StorageHelper.itemTargetsMet(mod, COLLECT_STONE_GEAR)) {
                         if (mod.getItemStorage().getItemCount(Items.STICK) < 8) {
                             _stoneGearTask = TaskCatalogue.getItemTask(Items.STICK, 8);
                             return _stoneGearTask;
@@ -1527,37 +1535,11 @@ public class BeatMinecraftSpeedrunTask extends Task {
                         _stoneGearTask = TaskCatalogue.getSquashedItemTask(COLLECT_STONE_GEAR);
                         return _stoneGearTask;
                     } else {
+                        _isDoingStone = false;
                         _stoneGearTask = null;
                     }
-                    // dont get porkchop, no fun allowed
-
-                    /*
-                    if (mod.getEntityTracker().entityFound(PigEntity.class) && (StorageHelper.itemTargetsMet(mod,
-                            COLLECT_STONE_GEAR) || StorageHelper.itemTargetsMet(mod, IRON_GEAR_MIN) ||
-                            eyeGearSatisfied || ironGearSatisfied)) {
-                        Predicate<Entity> notBaby = entity -> entity instanceof LivingEntity livingEntity && !livingEntity.isBaby();
-                        _getPorkchopTask = new KillAndLootTask(PigEntity.class, notBaby, new ItemTarget(Items.PORKCHOP, 1));
-                        return _getPorkchopTask;
-                    } else {
-                        _getPorkchopTask = null;
-                    }
-
-                    setDebugState("Searching a better place to start with.");
-                    if (_config.renderDistanceManipulation) {
-                        if (!mod.getClientBaritone().getExploreProcess().isActive()) {
-                            if (_timer1.elapsed()) {
-                                MinecraftClient.getInstance().options.getViewDistance().setValue(32);
-                                MinecraftClient.getInstance().options.getEntityDistanceScaling().setValue(5.0);
-                                _timer1.reset();
-                            }
-                        }
-                    }
-                    searchBiomeTask = new SearchWithinBiomeTask(BiomeKeys.PLAINS);
-                    return searchBiomeTask;
-                } else {
-                    searchBiomeTask = null;
-                */
                 }
+
                 // Then get one bed
                 if (!mod.getItemStorage().hasItem(ItemHelper.BED) && _config.sleepThroughNight) {
                     return _getOneBedTask;
@@ -1581,10 +1563,18 @@ public class BeatMinecraftSpeedrunTask extends Task {
                 // Then starter gear
                 if (!StorageHelper.itemTargetsMet(mod, IRON_GEAR_MIN) && !eyeGearSatisfied &&
                         !ironGearSatisfied) {
-                    _starterGearTask = TaskCatalogue.getSquashedItemTask(IRON_GEAR);
-                    return _starterGearTask;
+                    _isDoingIron = true;
                 } else {
                     _starterGearTask = null;
+                }
+                if (_isDoingIron) {
+                    if (!StorageHelper.itemTargetsMet(mod, IRON_GEAR)) {
+                        _starterGearTask = TaskCatalogue.getSquashedItemTask(IRON_GEAR);
+                        return _starterGearTask;
+                    } else {
+                        _isDoingIron = false;
+                        _starterGearTask = null;
+                    }
                 }
                 // Then get shield
                 if (_config.getShield && !shieldSatisfied && !mod.getFoodChain().needsToEat()) {
@@ -1640,7 +1630,18 @@ public class BeatMinecraftSpeedrunTask extends Task {
                 // Then get diamond
                 if (!eyeGearSatisfied) {
                     if (!StorageHelper.itemTargetsMet(mod, COLLECT_EYE_GEAR_MIN)) {
-                        _gearTask = TaskCatalogue.getSquashedItemTask((Arrays.stream(COLLECT_EYE_GEAR)).toArray(ItemTarget[]::new));
+                        _isDoingDiamond = true;
+                    } else {
+                        _gearTask = null;
+                    }
+                    if (_isDoingDiamond) {
+                        if (!StorageHelper.itemTargetsMet(mod, COLLECT_EYE_GEAR)) {
+                            _gearTask = TaskCatalogue.getSquashedItemTask(COLLECT_EYE_GEAR);
+                            return _gearTask;
+                        } else {
+                            _isDoingDiamond = false;
+                            _gearTask = null;
+                        }
                     }
                     for (Item diamond : COLLECT_EYE_ARMOR) {
                         if (mod.getItemStorage().hasItem(diamond) && !StorageHelper.isArmorEquipped(mod, diamond)) {
