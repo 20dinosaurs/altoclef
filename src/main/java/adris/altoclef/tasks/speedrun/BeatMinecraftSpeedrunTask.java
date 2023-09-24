@@ -82,7 +82,10 @@ public class BeatMinecraftSpeedrunTask extends Task {
             toItemTargets(Items.STONE_PICKAXE, 1)
     );
     private static final Item COLLECT_SHIELD = Items.SHIELD;
-    private static final Item[] COLLECT_IRON_ARMOR = ItemHelper.IRON_ARMORS;
+    private static final Item[] COLLECT_IRON_ARMOR = new Item[]{
+            Items.IRON_CHESTPLATE,
+            Items.IRON_BOOTS
+    };
     private static final Item[] COLLECT_EYE_ARMOR_END = ItemHelper.DIAMOND_ARMORS;
     private static final ItemTarget[] COLLECT_IRON_GEAR = combine(
             toItemTargets(Items.IRON_SWORD, 2),
@@ -1626,13 +1629,10 @@ public class BeatMinecraftSpeedrunTask extends Task {
                         if (mod.getItemStorage().hasItem(iron) && !StorageHelper.isArmorEquipped(mod, iron)) {
                             setDebugState("Equipping armor.");
                             return new EquipArmorTask(iron);
-                        } else if (!mod.getItemStorage().hasItem(iron) && !StorageHelper.isArmorEquipped(mod, iron)) {
-                            _ironGearTask = TaskCatalogue.getItemTask(iron, 1);
-                            return _ironGearTask;
                         }
                     }
-                    /*_ironGearTask = TaskCatalogue.getSquashedItemTask(Arrays.stream(COLLECT_IRON_ARMOR).filter(item -> !mod.getItemStorage().hasItem(item) && !StorageHelper.isArmorEquipped(mod, item)).map(item -> new ItemTarget(item, 1)).toArray(ItemTarget[]::new));
-                    return _ironGearTask;*/
+                    _ironGearTask = TaskCatalogue.getSquashedItemTask(Arrays.stream(COLLECT_IRON_ARMOR).filter(item -> !mod.getItemStorage().hasItem(item) && !StorageHelper.isArmorEquipped(mod, item)).map(item -> new ItemTarget(item, 1)).toArray(ItemTarget[]::new));
+                    return _ironGearTask;
                 } else {
                     _ironGearTask = null;
                 }
