@@ -6,6 +6,7 @@ public class BeatMinecraftConfig {
     public boolean placeSpawnNearEndPortal = true;
     public boolean barterPearlsInsteadOfEndermanHunt;
     public boolean sleepThroughNight = true;
+    public boolean sleepUnderground = false;
     public boolean rePickupCraftingTable = true;
     public boolean searchRuinedPortals = true;
     public boolean searchDesertTemples = true;

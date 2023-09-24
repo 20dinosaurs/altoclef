@@ -111,7 +111,8 @@ public class BeatMinecraftSpeedrunTask extends Task {
             toItemTargets(Items.IRON_SWORD),
             toItemTargets(Items.STONE_SHOVEL),
             toItemTargets(Items.STONE_HOE),
-            toItemTargets(Items.IRON_PICKAXE)
+            toItemTargets(Items.IRON_PICKAXE),
+            toItemTargets(Items.IRON_INGOT, 8)
     );
     private static final ItemTarget[] IRON_GEAR_MIN = combine(
             toItemTargets(Items.IRON_SWORD),
@@ -1300,8 +1301,8 @@ public class BeatMinecraftSpeedrunTask extends Task {
     }
 
     private boolean anyBedsFound(AltoClef mod) {
-        return mod.getBlockTracker().anyFound(Blocks.HAY_BLOCK) ||
-                mod.getEntityTracker().itemDropped(Items.HAY_BLOCK);
+        return mod.getBlockTracker().anyFound(ItemHelper.itemsToBlocks(ItemHelper.BED)) ||
+                mod.getEntityTracker().itemDropped(ItemHelper.BED);
     }
 
     private boolean anyHayFound(AltoClef mod) {
@@ -1401,6 +1402,7 @@ public class BeatMinecraftSpeedrunTask extends Task {
                     getBedTask = null;
                 }
                 if (mod.getItemStorage().getItemCount(Items.HAY_BLOCK) < 5 && anyHayFound(mod)) {
+                    Debug.logWarning(String.valueOf(anyHayFound(mod)));
                     setDebugState("A hay block was found, getting it.");
                     if (_config.renderDistanceManipulation) {
                         if (!mod.getClientBaritone().getExploreProcess().isActive()) {
@@ -1411,7 +1413,8 @@ public class BeatMinecraftSpeedrunTask extends Task {
                             }
                         }
                     }
-                    getHayTask = TaskCatalogue.getItemTask(Items.HAY_BLOCK, 2);
+                    getHayTask = new CollectHayBlockTask(1);
+                    return getHayTask;
                 } else {
                     getHayTask = null;
                 }
