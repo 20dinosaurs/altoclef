@@ -116,7 +116,7 @@ public class LocateStrongholdCoordinatesTask extends Task {
         }
 
         // Calculate stronghold position
-        if (_cachedEyeDirection2 != null && !mod.getEntityTracker().entityFound(EyeOfEnderEntity.class) && _strongholdEstimatePos == null) {
+        if (_cachedEyeDirection2 != null && _cachedEyeDirection != null && !mod.getEntityTracker().entityFound(EyeOfEnderEntity.class) && _strongholdEstimatePos == null) {
             if (_cachedEyeDirection2.getAngle() >= _cachedEyeDirection.getAngle()) {
                 Debug.logMessage("2nd eye thrown at wrong position, or points to different stronghold. Rethrowing");
                 _cachedEyeDirection = _cachedEyeDirection2;
@@ -129,7 +129,15 @@ public class LocateStrongholdCoordinatesTask extends Task {
 
 
                 _strongholdEstimatePos = calculateIntersection(throwOrigin, throwDelta, throwOrigin2, throwDelta2); // stronghold estimate
-                Debug.logMessage("Stronghold is at " + (int) _strongholdEstimatePos.getX() + ", " + (int) _strongholdEstimatePos.getZ() + " (" + (int) mod.getPlayer().getPos().distanceTo(Vec3d.of(_strongholdEstimatePos)) + " blocks away)");
+                // jank fix
+                if (_strongholdEstimatePos.equals(new Vec3i(0, 0, 0))) {
+                    _cachedEyeDirection = null;
+                    _cachedEyeDirection2 = null;
+                    _strongholdEstimatePos = null;
+                    Debug.logMessage("Retrying, stronghold returned bad value.");
+                } else {
+                    Debug.logMessage("Stronghold is at " + (int) _strongholdEstimatePos.getX() + ", " + (int) _strongholdEstimatePos.getZ() + " (" + (int) mod.getPlayer().getPos().distanceTo(Vec3d.of(_strongholdEstimatePos)) + " blocks away)");
+                }
             }
         }
 
