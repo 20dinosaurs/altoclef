@@ -1235,6 +1235,7 @@ public class BeatMinecraftSpeedrunTask extends Task {
         if (mod.getEntityTracker().itemDropped(Items.ENDER_PEARL)) {
             return new PickupDroppedItemTask(Items.ENDER_PEARL, 1);
         }
+        // ignore this, just leaving for the config. will barter pearls anyway
         if (_config.barterPearlsInsteadOfEndermanHunt) {
             // Equip golden armor before trading...
             if (!StorageHelper.isArmorEquipped(mod, Items.GOLDEN_HELMET)) {
@@ -1242,6 +1243,10 @@ public class BeatMinecraftSpeedrunTask extends Task {
             }
             return new TradeWithPiglinsTask(32, Items.ENDER_PEARL, count);
         } else {
+            if (_config.renderDistanceManipulation) {
+                getInstance().options.getViewDistance().setValue(32);
+                getInstance().options.getEntityDistanceScaling().setValue(5.0);
+            }
             if ((mod.getEntityTracker().entityFound(EndermanEntity.class) ||
                     mod.getEntityTracker().itemDropped(Items.ENDER_PEARL)) &&
                     mod.getItemStorage().getItemCount(Items.TWISTING_VINES) > TWISTING_VINES_COUNT_MIN) {
@@ -1253,6 +1258,7 @@ public class BeatMinecraftSpeedrunTask extends Task {
                 }
             }
             if (mod.getItemStorage().getItemCount(Items.TWISTING_VINES) < TWISTING_VINES_COUNT_MIN) {
+
                 if (!mod.getBlockTracker().isTracking(Blocks.TWISTING_VINES) || !mod.getBlockTracker().isTracking(Blocks.TWISTING_VINES_PLANT)) {
                     mod.getBlockTracker().trackBlock(Blocks.TWISTING_VINES, Blocks.TWISTING_VINES_PLANT);
                 }
@@ -1260,13 +1266,20 @@ public class BeatMinecraftSpeedrunTask extends Task {
                 if (mod.getBlockTracker().anyFound(Blocks.TWISTING_VINES, Blocks.TWISTING_VINES_PLANT)) {
                     getTwistingVines = TaskCatalogue.getItemTask(Items.TWISTING_VINES, TWISTING_VINES_COUNT);
                     return getTwistingVines;
-                } else {
-                    return new SearchChunkForBlockTask(Blocks.TWISTING_VINES, Blocks.TWISTING_VINES_PLANT, Blocks.WARPED_HYPHAE, Blocks.WARPED_NYLIUM);
                 }
             }
+//            return new SearchChunkForBlockTask(Blocks.TWISTING_VINES, Blocks.TWISTING_VINES_PLANT, Blocks.WARPED_HYPHAE, Blocks.WARPED_NYLIUM);
+            // barter pearls
+            setDebugState("Trading with piglins for pearls");
+            if (!StorageHelper.isArmorEquipped(mod, Items.GOLDEN_HELMET)) {
+                return new EquipArmorTask(Items.GOLDEN_HELMET);
+            }
+            return new TradeWithPiglinsTask(32, Items.ENDER_PEARL, count);
             // Search for warped forests this way...
+            /*
             setDebugState("Searching Warped Forest");
             return new SearchWithinBiomeTask(BiomeKeys.WARPED_FOREST);
+            */
         }
     }
 
