@@ -378,7 +378,7 @@ public class Settings implements IFailableConfigFile {
     /**
      * If true, a blast furnace will be used in smelting if an item to smelt is applicable.
      */
-    private boolean useBlastFurnace = true;
+    private boolean useBlastFurnace = false;
 
     /**
      * If true, will only accept items found in `supportedFuels` as fuel when smelting.

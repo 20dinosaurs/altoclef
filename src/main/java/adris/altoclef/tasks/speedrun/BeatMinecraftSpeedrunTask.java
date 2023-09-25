@@ -406,7 +406,7 @@ public class BeatMinecraftSpeedrunTask extends Task {
         boolean eyeGearSatisfied = StorageHelper.isArmorEquippedAll(mod, COLLECT_EYE_ARMOR);
         boolean ironGearSatisfied = StorageHelper.isArmorEquippedAll(mod, COLLECT_IRON_ARMOR);
         if (mod.getItemStorage().hasItem(Items.DIAMOND_PICKAXE)) {
-            mod.getBehaviour().setBlockBreakAdditionalPenalty(0);
+            mod.getBehaviour().setBlockBreakAdditionalPenalty(0.5);
         } else {
             mod.getBehaviour().setBlockBreakAdditionalPenalty(mod.getClientBaritoneSettings().blockBreakAdditionalPenalty.defaultValue);
         }
@@ -1243,9 +1243,13 @@ public class BeatMinecraftSpeedrunTask extends Task {
             }
             return new TradeWithPiglinsTask(32, Items.ENDER_PEARL, count);
         } else {
-            if (_config.renderDistanceManipulation) {
-                getInstance().options.getViewDistance().setValue(32);
-                getInstance().options.getEntityDistanceScaling().setValue(5.0);
+            // if theres gold dont bother goin for endermen
+            if (mod.getItemStorage().getItemCount(Items.GOLD_INGOT) > 24) {
+                setDebugState("Trading with piglins for pearls");
+                if (!StorageHelper.isArmorEquipped(mod, Items.GOLDEN_HELMET)) {
+                    return new EquipArmorTask(Items.GOLDEN_HELMET);
+                }
+                return new TradeWithPiglinsTask(32, Items.ENDER_PEARL, count);
             }
             if ((mod.getEntityTracker().entityFound(EndermanEntity.class) ||
                     mod.getEntityTracker().itemDropped(Items.ENDER_PEARL)) &&
@@ -1258,7 +1262,10 @@ public class BeatMinecraftSpeedrunTask extends Task {
                 }
             }
             if (mod.getItemStorage().getItemCount(Items.TWISTING_VINES) < TWISTING_VINES_COUNT_MIN) {
-
+                if (_config.renderDistanceManipulation) {
+                    getInstance().options.getViewDistance().setValue(32);
+                    getInstance().options.getEntityDistanceScaling().setValue(5.0);
+                }
                 if (!mod.getBlockTracker().isTracking(Blocks.TWISTING_VINES) || !mod.getBlockTracker().isTracking(Blocks.TWISTING_VINES_PLANT)) {
                     mod.getBlockTracker().trackBlock(Blocks.TWISTING_VINES, Blocks.TWISTING_VINES_PLANT);
                 }

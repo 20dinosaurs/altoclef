@@ -200,7 +200,7 @@ public class CollectFoodTask extends Task {
                 _currentResourceTask = new CraftInTableTask(new RecipeTarget(Items.BREAD, 99999999, CraftingRecipe.newShapedRecipe("bread", new Item[][]{w, w, w, o, o, o, o, o, o}, 1)), false, false);
                 return _currentResourceTask;
             }
-            if (mod.getItemStorage().getItemCount(Items.HAY_BLOCK) >= 3) {
+            if (mod.getItemStorage().getItemCount(Items.HAY_BLOCK) > 3) {
                 setDebugState("Crafting Wheat");
                 Item[] o = null;
                 _currentResourceTask = new CraftInInventoryTask(new RecipeTarget(Items.WHEAT, mod.getItemStorage().getItemCount(Items.HAY_BLOCK) - 3, CraftingRecipe.newShapedRecipe("wheat", new Item[][]{new Item[]{Items.HAY_BLOCK}, o, o, o}, 9)), false, false);

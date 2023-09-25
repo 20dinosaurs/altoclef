@@ -231,7 +231,7 @@ public class AltoClef implements ModInitializer {
         getClientBaritoneSettings().allowDiagonalDescend.value = true;
         getClientBaritoneSettings().allowDiagonalAscend.value = true;
         getClientBaritoneSettings().blocksToAvoid.value = List.of(
-//                Blocks.FLOWERING_AZALEA, Blocks.AZALEA,
+                Blocks.FLOWERING_AZALEA, Blocks.AZALEA,
                 Blocks.POWDER_SNOW,
                 Blocks.BIG_DRIPLEAF, Blocks.BIG_DRIPLEAF_STEM,
                 Blocks.CAVE_VINES, Blocks.CAVE_VINES_PLANT,
@@ -245,7 +245,7 @@ public class AltoClef implements ModInitializer {
         );
         // Don't let baritone mine with sword
         getClientBaritoneSettings().useSwordToMine.value = false;
-        // (dont) Reduces a bit of far rendering to save FPS
+        // (dosent) Reduces a bit of far rendering to save FPS
         getClientBaritoneSettings().fadePath.value = false;
         // Don't let baritone scan dropped items, we handle that ourselves.
         getClientBaritoneSettings().mineScanDroppedItems.value = false;
