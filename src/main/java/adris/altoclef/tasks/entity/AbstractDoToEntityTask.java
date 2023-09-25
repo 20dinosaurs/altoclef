@@ -117,7 +117,7 @@ public abstract class AbstractDoToEntityTask extends Task implements ITaskRequir
                 _progress.reset();
                 return onEntityInteract(mod, entity);
             } else if (!tooClose) {
-                setDebugState("Approaching target");
+                setDebugState("Casually approaching target");
                 if (!_progress.check(mod)) {
                     _progress.reset();
                     Debug.logMessage("Failed to get to target, blacklisting.");

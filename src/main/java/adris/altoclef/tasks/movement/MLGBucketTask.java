@@ -104,7 +104,7 @@ public class MLGBucketTask extends Task {
         assert player != null;
         double totalFallDistance = player.fallDistance + (player.getY() - pos.getY() - 1);
         // Copied from living entity I think, somewhere idk you get the picture.
-        double baseFallDamage = MathHelper.ceil(totalFallDistance - 3.0F);
+        double baseFallDamage = totalFallDistance > 4 ? 0 : MathHelper.ceil(totalFallDistance - 3.0F);
         // Be a bit conservative, assume MORE damage
         assert world != null;
         return EntityHelper.calculateResultingPlayerDamage(player, world.getDamageSources().fall(), baseFallDamage);

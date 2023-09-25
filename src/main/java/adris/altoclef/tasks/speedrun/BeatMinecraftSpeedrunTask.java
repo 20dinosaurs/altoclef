@@ -68,8 +68,10 @@ public class BeatMinecraftSpeedrunTask extends Task {
             Blocks.HAY_BLOCK
     };
     private static final Item[] COLLECT_EYE_ARMOR = new Item[]{
-            Items.GOLDEN_HELMET, Items.DIAMOND_CHESTPLATE, Items.DIAMOND_LEGGINGS,
-            Items.DIAMOND_BOOTS
+            Items.DIAMOND_CHESTPLATE,
+            Items.DIAMOND_LEGGINGS,
+            Items.DIAMOND_BOOTS,
+            Items.GOLDEN_HELMET
     };
     private static final ItemTarget[] COLLECT_STONE_GEAR = combine(
             toItemTargets(Items.STONE_SWORD, 1),
@@ -1400,21 +1402,23 @@ public class BeatMinecraftSpeedrunTask extends Task {
                 } else {
                     getBedTask = null;
                 }
-                if (mod.getItemStorage().getItemCount(Items.HAY_BLOCK) < 5 && anyHayFound(mod)) {
-                    setDebugState("A hay block was found, getting it.");
-                    if (_config.renderDistanceManipulation) {
-                        if (!mod.getClientBaritone().getExploreProcess().isActive()) {
-                            if (_timer1.elapsed()) {
-                                MinecraftClient.getInstance().options.getViewDistance().setValue(2);
-                                MinecraftClient.getInstance().options.getEntityDistanceScaling().setValue(0.5);
-                                _timer1.reset();
+                if (StorageHelper.itemTargetsMet(mod, COLLECT_IRON_GEAR_MIN) && !StorageHelper.isArmorEquippedAll(mod, COLLECT_EYE_ARMOR)) {
+                    if (mod.getItemStorage().getItemCount(Items.HAY_BLOCK) < 3 && anyHayFound(mod)) {
+                        setDebugState("A hay block was found, getting it.");
+                        if (_config.renderDistanceManipulation) {
+                            if (!mod.getClientBaritone().getExploreProcess().isActive()) {
+                                if (_timer1.elapsed()) {
+                                    MinecraftClient.getInstance().options.getViewDistance().setValue(2);
+                                    MinecraftClient.getInstance().options.getEntityDistanceScaling().setValue(0.5);
+                                    _timer1.reset();
+                                }
                             }
                         }
+                        getHayTask = new CollectHayBlockTask(1);
+                        return getHayTask;
+                    } else {
+                        getHayTask = null;
                     }
-                    getHayTask = new CollectHayBlockTask(1);
-                    return getHayTask;
-                } else {
-                    getHayTask = null;
                 }
                 if (shouldForce(mod, _logsTask)) {
                     setDebugState("Getting logs for later.");

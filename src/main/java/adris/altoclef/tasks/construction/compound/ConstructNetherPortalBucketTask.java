@@ -126,10 +126,6 @@ public class ConstructNetherPortalBucketTask extends Task {
 
     @Override
     protected Task onTick(AltoClef mod) {
-        if (MarvionBeatMinecraftTask.getConfig().renderDistanceManipulation) {
-            MinecraftClient.getInstance().options.getViewDistance().setValue(2);
-            MinecraftClient.getInstance().options.getEntityDistanceScaling().setValue(0.5);
-        }
         if (_portalOrigin != null) {
             if (mod.getWorld().getBlockState(_portalOrigin.up()).getBlock() == Blocks.NETHER_PORTAL) {
                 setDebugState("Done constructing nether portal.");
@@ -239,6 +235,10 @@ public class ConstructNetherPortalBucketTask extends Task {
 
         // We have a portal, now build it.
         for (Vec3i framePosRelative : PORTAL_FRAME) {
+            if (MarvionBeatMinecraftTask.getConfig().renderDistanceManipulation) {
+                MinecraftClient.getInstance().options.getViewDistance().setValue(2);
+                MinecraftClient.getInstance().options.getEntityDistanceScaling().setValue(0.5);
+            }
             BlockPos framePos = _portalOrigin.add(framePosRelative);
             Block frameBlock = mod.getWorld().getBlockState(framePos).getBlock();
             if (frameBlock == Blocks.OBSIDIAN) {

@@ -138,14 +138,10 @@ public class DestroyBlockTask extends Task implements ITaskRequiresGrounded {
             }
         }
         if (mod.getWorld().getBlockState(_pos).getBlock() == Blocks.HAY_BLOCK) {
-            Iterable<Entity> entities = mod.getWorld().getEntities();
-            for (Entity entity : entities) {
-                if (entity instanceof PillagerEntity) {
-                    if (_pos.isWithinDistance(entity.getPos(), 144)) {
-                        Debug.logMessage("Blacklisting pillager hay.");
-                        mod.getBlockTracker().requestBlockUnreachable(_pos, 0);
-                    }
-                }
+            BlockPos haysUpPos = _pos.up();
+            if (mod.getWorld().getBlockState(haysUpPos).getBlock() == Blocks.CARVED_PUMPKIN) {
+                Debug.logMessage("Blacklisting pillage hay bales.");
+                mod.getBlockTracker().requestBlockUnreachable(_pos, 0);
             }
         }
         if (mod.getClientBaritone().getPathingBehavior().isPathing()) {
