@@ -380,7 +380,8 @@ public class BeatMinecraftSpeedrunTask extends Task {
         mod.getBlockTracker().trackBlock(TRACK_BLOCKS);
         mod.getBehaviour().addProtectedItems(Items.ENDER_EYE, Items.BLAZE_ROD, Items.ENDER_PEARL, Items.CRAFTING_TABLE,
                 Items.IRON_INGOT, Items.WATER_BUCKET, Items.FLINT_AND_STEEL, Items.SHIELD, Items.SHEARS, Items.BUCKET,
-                Items.GOLDEN_HELMET, Items.SMOKER, Items.FURNACE, Items.BLAST_FURNACE, Items.HAY_BLOCK);
+                Items.GOLDEN_HELMET, Items.SMOKER, Items.FURNACE, Items.BLAST_FURNACE, Items.HAY_BLOCK,
+                Items.COOKED_BEEF, Items.COOKED_CHICKEN, Items.COOKED_MUTTON, Items.COOKED_PORKCHOP);
         mod.getBehaviour().addProtectedItems(ItemHelper.BED);
         mod.getBehaviour().addProtectedItems(ItemHelper.IRON_ARMORS);
         mod.getBehaviour().addProtectedItems(ItemHelper.LOG);
@@ -957,8 +958,12 @@ public class BeatMinecraftSpeedrunTask extends Task {
             return new MineAndCollectTask(Items.BLAST_FURNACE, 1, new Block[]{Blocks.BLAST_FURNACE}, MiningRequirement.WOOD);
         }
 
+        if (shouldForce(mod, _sleepThroughNightTask)) {
+            setDebugState("Sleeping through night");
+            return _sleepThroughNightTask;
+        }
         // Sleep through night.
-        if (_config.sleepThroughNight && (_config.sleepUnderground || LookHelper.getCameraPos(mod).y > 40) && !_endPortalOpened && WorldHelper.getCurrentDimension() == Dimension.OVERWORLD) {
+        if (_config.sleepThroughNight && (_config.sleepUnderground || LookHelper.getCameraPos(mod).y > 45) && !_endPortalOpened && WorldHelper.getCurrentDimension() == Dimension.OVERWORLD) {
             if (WorldHelper.canSleep()) {
                 // for smoker
                 _smeltTask = null;

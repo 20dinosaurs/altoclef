@@ -252,7 +252,7 @@ public class AltoClef implements ModInitializer {
         // Don't let baritone wait for drops, we handle that ourselves.
         getClientBaritoneSettings().mineDropLoiterDurationMSThanksLouca.value = 0L;
         // Allow a little fall damage
-        getClientBaritoneSettings().maxFallHeightNoWater.value = 4;
+        getClientBaritoneSettings().maxFallHeightNoWater.value = 3;
 
         // Water bucket placement will be handled by us exclusively
         getExtraBaritoneSettings().configurePlaceBucketButDontFall(true);
